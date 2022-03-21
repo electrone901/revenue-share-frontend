@@ -1,0 +1,61 @@
+.form-container {
+    border: 1px solid #0000003d;
+    text-align: center;
+}
+
+form {
+    padding: 2rem;
+}
+
+.text-field {
+    padding-bottom: 1rem;
+}
+
+.root-create-pet {
+    flex-grow: 1;
+    min-height: 80vh;
+    padding-top: 5rem;
+    padding-bottom: 4rem;
+    text-align: center;
+    width: 500px;
+}
+
+.mypopup-box {
+    position: fixed;
+    background: #00000050;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 99 !important;
+}
+
+.mybox {
+    position: relative;
+    width: 60%;
+    margin: 0 auto;
+    height: auto;
+    max-height: 60vh;
+    margin-top: calc(100vh - 85vh - 20px);
+    background: #fff;
+    border-radius: 4px;
+    padding: 20px;
+    border: 1px solid #999;
+    overflow: auto;
+}
+
+.close-icon {
+    content: 'x';
+    cursor: pointer;
+    position: fixed;
+    right: calc(20% - 30px);
+    top: calc(100vh - 85vh - 33px);
+    background: #ededed;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    line-height: 20px;
+    text-align: center;
+    border: 1px solid #999;
+    font-size: 20px;
+}

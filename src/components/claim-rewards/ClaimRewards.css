@@ -1,0 +1,24 @@
+.claim-container {
+    width: 100%;
+    text-align: center;
+    padding-top: 4rem;
+}
+
+.claim-card {
+    display: inline-block;
+    padding: 2rem;
+}
+
+.claim-info {
+    padding: 0.5rem;
+}
+
+.claim-info2 {
+    font-weight: 700;
+}
+
+.claim-btns {
+    padding-top: 2rem;
+    display: flex;
+    justify-content: space-evenly;
+}
