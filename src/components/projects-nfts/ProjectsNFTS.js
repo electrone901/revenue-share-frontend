@@ -34,8 +34,8 @@ function ProjectsNFTS({ account, contractData }) {
 
   const { contractaddress } = useParams()
   const img = {
-    '0x59fCcFbE3511B0f1286D54935258cB93AcC18E81','',
-    '0x10B3Ce8b9B1b6777EE9d798119Ef7Be9BD38EB83','',
+    '0x59fCcFbE3511B0f1286D54935258cB93AcC18E81':'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/avee.png',
+    '0x10B3Ce8b9B1b6777EE9d798119Ef7Be9BD38EB83':'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/93cb11efacd85643c92296fc24430485e4846050/src/images/projects/Anchor.svg',
   }
   const loadMyCollection = async () => {
     const covalentAPI = 'ckey_d4115699196e4d238fa138e180c'
@@ -174,12 +174,12 @@ function ProjectsNFTS({ account, contractData }) {
                     key={index}
                   >
                     <Card sx={{ maxWidth: 235, border: `` }}>
-                      {/* <CardMedia
+                      <CardMedia
                         component="img"
                         height="184"
-                        image=""
+                        image={img[contractaddress]}
                         alt="nft"
-                      /> */}
+                      />
                       <CardContent
                         style={{
                           border: `${COLORS.Silver}`,
