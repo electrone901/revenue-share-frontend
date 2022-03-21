@@ -45,7 +45,10 @@ function Projects({
 }) {
   // console.log("🚀 ~ file: Projects.js ~ line 44 ~ mockAaveTokenAddress", mockAaveTokenAddress)
   // console.log('contractProjects[0]', contractProjects[0])
-  console.log('mockAaveTokenContract approve(address,uint256):', mockAaveTokenContract)
+  console.log(
+    'mockAaveTokenContract approve(address,uint256):',
+    mockAaveTokenContract,
+  )
   console.log('aaveStakedShareContract', aaveStakedShareContract)
   // console.log('mockAaveTokenContract ', mockAaveTokenContract)
 
@@ -76,9 +79,9 @@ function Projects({
   let NFTS = 3
   const history = useHistory()
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
   const togglePopup = () => {
-    setIsOpen(!isOpen);
+    setIsOpen(!isOpen)
   }
 
   useEffect(() => {
@@ -257,22 +260,25 @@ function Projects({
     // console.log('🚀  allowance', allowance)
     // Remember approve the tokens Transfer before stake
 
-
     const aaveStakedShareAddress = '0x59fCcFbE3511B0f1286D54935258cB93AcC18E81'
-    const allowance = await mockAaveTokenContract.methods.allowance(account, mockAaveTokenAddress).call()
-    console.log("  allowance🚀🚀🚀", allowance)
+    const allowance = await mockAaveTokenContract.methods
+      .allowance(account, mockAaveTokenAddress)
+      .call()
+    console.log('  allowance🚀🚀🚀', allowance)
 
-      // if allowance <= 0 call approve
-      // First part is to check if allowance <= 0 call approve.
-      // approve allow the mockAaveTokenContract to spend the user's tokens
-      //  after that users can stake
-      if(allowance <= 0) {
-        // approve function returns how much money this contract can spend
-        const approve = await mockAaveTokenContract.methods.approve(aaveStakedShareAddress, (1).toString()).send({from:account})
-        console.log('🚀  approve', approve)
-      }
+    // if allowance <= 0 call approve
+    // First part is to check if allowance <= 0 call approve.
+    // approve allow the mockAaveTokenContract to spend the user's tokens
+    //  after that users can stake
+    if (allowance <= 0) {
+      // approve function returns how much money this contract can spend
+      const approve = await mockAaveTokenContract.methods
+        .approve(aaveStakedShareAddress, (1).toString())
+        .send({ from: account })
+      console.log('🚀  approve', approve)
+    }
 
-      // Second call aaveStakedShareContract to stake tokens
+    // Second call aaveStakedShareContract to stake tokens
     const stake = await contractProjects[0].methods
       .stake((1).toString(), (1).toString())
       .send({ from: account })
@@ -280,30 +286,30 @@ function Projects({
 
     // // balanceOf(address)
     const balanceOf = await contractProjects[0].methods
-      .balanceOf(account).call()
+      .balanceOf(account)
+      .call()
     console.log('🚀  balanceOf', balanceOf)
-
   }
 
-  const  gotoProjectNfts = (contractAddress) => {
+  const gotoProjectNfts = (contractAddress) => {
     const addresses = [
       '0x59fCcFbE3511B0f1286D54935258cB93AcC18E81',
-      '0x10B3Ce8b9B1b6777EE9d798119Ef7Be9BD38EB83'
+      '0x10B3Ce8b9B1b6777EE9d798119Ef7Be9BD38EB83',
     ]
     const contractaddress = addresses[contractAddress]
     history.push(`/projects-nfts/${contractaddress}`)
   }
+
+  const img = [
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/aaveNFT.jpg',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/93cb11efacd85643c92296fc24430485e4846050/src/images/projects/Anchor.svg',
+  ]
 
   return (
     <Container>
       <div
         style={{ minHeight: '70vh', paddingBottom: '3rem', paddingTop: '3rem' }}
       >
-        <img src={logo} alt="logo" />
-        <img
-          src="https://raw.githubusercontent.com/NimrodHunter/Revenue-Share-NTF/165e5e783622d2beadf3747d2116b76505518edb/logos/Aave.svg"
-          alt="logo"
-        />
         <Container>
           <div className="box">
             <div className="container-outer">
@@ -379,7 +385,7 @@ tvlConverted: 1200 */}
           <CircularStatic />
         ) : (
           <div>
-            <Button
+            {/* <Button
               variant="contained"
               className="btn-stake"
               color="primary"
@@ -417,18 +423,16 @@ tvlConverted: 1200 */}
               onClick={getProjectInfo}
             >
               getProjectsInfo
-            </Button>
+            </Button> */}
 
             {/* logo: "https://github.com/NimrodHunter/Revenue-Share-NTF/blob/master/logos/Aave.svg"
 name: "Aave Revenue"
 numbOfNfts: "4"
 tvlConverted: 3001200 */}
 
+            {isOpen && <Stake handleClose={togglePopup} />}
 
-{isOpen && <Stake handleClose={togglePopup}/>}
-
-
-    <Grid container>
+            <Grid container>
               {projectsInfo.length ? (
                 projectsInfo.map((project, index) => (
                   <Grid
@@ -445,7 +449,7 @@ tvlConverted: 3001200 */}
                           <Avatar aria-label="recipe">
                             <img
                               className="project-icon"
-                              src="https://images.unsplash.com/photo-1524416866085-e6895d696250?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1935&q=80"
+                              src={img[index]}
                               alt="icon"
                             />
                           </Avatar>
@@ -482,14 +486,13 @@ tvlConverted: 3001200 */}
                       </CardContent>
 
                       <CardActions className="card-act">
-
-                      <Button
+                        <Button
                           variant="contained"
-                          style={{backgroundColor: '#06d406'}}
+                          style={{ backgroundColor: '#06d406' }}
                           className="btn-stake"
                           color="primary"
                           size="small"
-                          onClick={ () => gotoProjectNfts(project.address)}
+                          onClick={() => gotoProjectNfts(project.address)}
                         >
                           See NFTs
                         </Button>
@@ -525,7 +528,9 @@ tvlConverted: 3001200 */}
                   </Grid>
                 ))
               ) : (
-                <h2>No Projects Yet...</h2>
+                <Container style={{textAlign: 'center', paddingTop: '1rem'}}>
+                  <h2>Please Login...</h2>
+                </Container>
               )}
             </Grid>
 

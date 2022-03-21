@@ -93,6 +93,43 @@ function App() {
         ...contractProjects,
         anchorStakedShareContract,
       ])
+
+      // DUMMY DATA
+      const anchorStakedShareContract1 = new web3.eth.Contract(
+        stakedShareABI,
+        AnchorAddress,
+      )
+      setContractProjects((contractProjects) => [
+        ...contractProjects,
+        anchorStakedShareContract1,
+      ])
+      setContractProjects((contractProjects) => [
+        ...contractProjects,
+        anchorStakedShareContract1,
+      ])
+      setContractProjects((contractProjects) => [
+        ...contractProjects,
+        anchorStakedShareContract1,
+      ])
+      setContractProjects((contractProjects) => [
+        ...contractProjects,
+        anchorStakedShareContract1,
+      ])
+      setContractProjects((contractProjects) => [
+        ...contractProjects,
+        anchorStakedShareContract1,
+      ])
+      setContractProjects((contractProjects) => [
+        ...contractProjects,
+        anchorStakedShareContract1,
+      ])
+      setContractProjects((contractProjects) => [
+        ...contractProjects,
+        anchorStakedShareContract1,
+      ])
+
+
+
       // setAnchorStakedShareContract(anchorStakedShareContract)
 
       // mockAaveToken

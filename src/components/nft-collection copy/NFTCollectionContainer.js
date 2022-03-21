@@ -11,7 +11,7 @@ function NFTCollectionContainer({ account, contractData }) {
         {/* <CreateSwap account={account} contractData={contractData} /> */}
         <div className="flex-container">
           <Typography gutterBottom className="title title-nfts" id="title-swap">
-            My NFTs
+          My Loyalty Rewards Program NFTs
           </Typography>
           <div className="label-btns-swap">
             <Chip size="medium" label="All" color="primary" clickable />

@@ -153,9 +153,9 @@ export const Navbar = withRouter(({ account, connectWallet, logout }) => {
             <Button className="whiteLink" component={Link} to="/my-nfts">
               My NFTs
             </Button>
-            <Button className="whiteLink" component={Link} to="/add-event">
+            {/* <Button className="whiteLink" component={Link} to="/add-event">
               Create Event
-            </Button>
+            </Button> */}
 
             <div className="grow" />
             <div className="sectionDesktop">

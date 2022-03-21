@@ -20,7 +20,7 @@ import CustomizedProgressBars from '../progress-bar/ProgressBar'
 const COLORS = {
   Diamond: '5px solid red',
   Silver: '5px solid blue',
-  'Patium Hands': '5px solid black',
+  PlatiumHands: '5px solid black',
 }
 
 function ProjectsNFTS({ account, contractData }) {
@@ -34,8 +34,10 @@ function ProjectsNFTS({ account, contractData }) {
 
   const { contractaddress } = useParams()
   const img = {
-    '0x59fCcFbE3511B0f1286D54935258cB93AcC18E81':'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/avee.png',
-    '0x10B3Ce8b9B1b6777EE9d798119Ef7Be9BD38EB83':'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/93cb11efacd85643c92296fc24430485e4846050/src/images/projects/Anchor.svg',
+    '0x59fCcFbE3511B0f1286D54935258cB93AcC18E81':
+      'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/aaveNFT.jpg',
+    '0x10B3Ce8b9B1b6777EE9d798119Ef7Be9BD38EB83':
+      'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/93cb11efacd85643c92296fc24430485e4846050/src/images/projects/Anchor.svg',
   }
   const loadMyCollection = async () => {
     const covalentAPI = 'ckey_d4115699196e4d238fa138e180c'
@@ -71,15 +73,13 @@ function ProjectsNFTS({ account, contractData }) {
     const userNFTs = async () => {
       const userAddress = '0xf4eA652F5B7b55f1493631Ea4aFAA63Fe0acc27C'
       if (userAddress) {
-        let myNFTs = await fetch(
-          `http://3.83.53.59:3000/user/${userAddress}`,
-        )
+        let myNFTs = await fetch(`http://3.83.53.59:3000/user/${userAddress}`)
         console.log('** myNFTs  **', myNFTs)
       }
     }
-    userNFTs()
+    // userNFTs()
     // setLoadNFTs(loadNFTs)
-    loadNFTs()
+    // loadNFTs()
 
     const loadSwapList = async () => {
       try {
@@ -162,7 +162,9 @@ function ProjectsNFTS({ account, contractData }) {
           <CircularStatic />
         ) : (
           <div>
-            <h2>Project's NFTs</h2>
+            <Container style={{paddingTop: '3rem' }}>
+              <h3>Project's NFTs</h3>
+            </Container>
             <Grid container spacing={24}>
               {projectsNFTs && projectsNFTs.blockNfts.nfts.length ? (
                 projectsNFTs.blockNfts.nfts.map((nft, index) => (
@@ -182,31 +184,30 @@ function ProjectsNFTS({ account, contractData }) {
                       />
                       <CardContent
                         style={{
-                          border: `${COLORS.Silver}`,
+                          // border: `${COLORS.Silver}`,
                           borderTop: `0px solid rgb(38 37 181 / 35%)`,
                         }}
                       >
                         <p className="info">
                           ID: <strong>{nft.id}</strong>
-                          ID: <strong>{nft.createAt}</strong>
-                        </p>
-                        {/* <p className="info">
-                          {' '}
-                          Amount: <strong>{'1,00'}</strong>
                         </p>
                         <p className="info">
-                          {' '}
-                          Period: <strong>{'3 months'}</strong>
+                          Create At: <strong>{nft.createAt}</strong>
                         </p>
                         <p className="info">
-                          {' '}
+                          Period: <strong>{nft.locked} seconds</strong>
+                        </p>
+                        <p className="info">
+                          Amount: <strong>{nft.amount / 10 ** 18}</strong>
+                        </p>
+                        <p className="info">
                           Level: <strong>{'Diamond Hands'}</strong>
                         </p>
                         <br />
                         <br />
-                        <CustomizedProgressBars />
+                        <CustomizedProgressBars value={nft.amount / 10 ** 18} />
                         <br />
-                        <br /> */}
+                        <br />
                         <Button
                           variant="contained"
                           size="small"
@@ -216,7 +217,7 @@ function ProjectsNFTS({ account, contractData }) {
                             backgroundColor: '#9a21b8',
                             color: 'white',
                           }}
-                          to={`/rewards`}
+                          to={`/my-nfts`}
                           // to={`/rewards/${pet.cid}`}
 
                           // "/collection/wallet-address"

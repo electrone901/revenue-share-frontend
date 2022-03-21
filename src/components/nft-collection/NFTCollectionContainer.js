@@ -11,14 +11,12 @@ function NFTCollectionContainer({ account, contractData }) {
         {/* <CreateSwap account={account} contractData={contractData} /> */}
         <div className="flex-container">
           <Typography gutterBottom className="title title-nfts" id="title-swap">
-            My NFTs
+          My Loyalty Rewards Program NFTs
           </Typography>
           <div className="label-btns-swap">
             <Chip size="medium" label="All" color="primary" clickable />
             <Chip size="medium" label="Newest" clickable />
-            <Chip size="medium" label="Last Week" clickable />
-            <Chip size="medium" label="Last Month" clickable />
-            <Chip size="medium" label="Others" clickable />
+
           </div>
         </div>
         <NFTCollection account={account} contractData={contractData} />
