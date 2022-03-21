@@ -18,12 +18,12 @@ import {
 } from '@material-ui/core'
 import './Stake.css'
 
-const Stake = (props) => {
+const Stake = ({handleClose,  handleStake, setProjectName, setAmount, setDuration}) => {
   const projectNameRef = createRef()
   const durationRef = createRef()
-  const [projectName, setProjectName] = useState('')
-  const [amount, setAmount] = useState('')
-  const [duration, setDuration] = useState('')
+  // const [projectName, setProjectName] = useState('')
+  // const [amount, setAmount] = useState('')
+  // const [duration, setDuration] = useState('')
 
   // const checkStake = async (e) => {
   //   e.preventDefault()
@@ -65,19 +65,7 @@ const Stake = (props) => {
   //   // .send({ from: account })
   // }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log('projectName, amount, duration', projectName, amount, duration)
 
-    // const event = isEmpty(e)
-    // console.log('EVENT', event)
-    // if (Object.keys(event).length < 9) {
-    //   swal('', 'Please fill out all input fields', 'error') // to be changed
-    // } else {
-    //   // this.props.createEvent(event)
-    //   console.log('state')
-    // }
-  }
   return (
     <StylesProvider injectFirst>
       <div className="mypopup-box">
@@ -85,11 +73,11 @@ const Stake = (props) => {
           <Container
             className="root-create-pet"
             style={{ minHeight: '70vh', paddingBottom: '3rem' }}
-          ><span className="close-icon" onClick={props.handleClose}>x</span>
+          ><span className="close-icon" onClick={handleClose}>x</span>
             <h5 align="center">Stake on Revenue Share NFT</h5>
             <div className="form-container">
               <form
-                onSubmit={handleSubmit}
+                onSubmit={handleStake}
                 className="form"
                 noValidate
                 autoComplete="off"
@@ -105,8 +93,8 @@ const Stake = (props) => {
                   defaultValue=""
                   ref={projectNameRef}
                 >
-                  <MenuItem value="Avee">Avee</MenuItem>
-                  <MenuItem value="Solana">Solana</MenuItem>
+                  <MenuItem value="aaveStakedShareContract">Avee</MenuItem>
+                  <MenuItem value="anchorStakedShareContract">Anchor</MenuItem>
                   <MenuItem value="Etherum">Etherum</MenuItem>
                   <MenuItem value="Link">Link</MenuItem>
                   <MenuItem value="Other">Other</MenuItem>
@@ -121,7 +109,7 @@ const Stake = (props) => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  defaultValue={amount}
+                  defaultValue=''
                   variant="outlined"
                   onChange={(e) => {
                     setAmount(e.target.value)
@@ -153,7 +141,7 @@ const Stake = (props) => {
                     backgroundColor: '#9370db',
                     color: 'white',
                   }}
-                  onClick={handleSubmit}
+                  onClick={handleStake}
                 >
                   Stake Now
                 </Button>

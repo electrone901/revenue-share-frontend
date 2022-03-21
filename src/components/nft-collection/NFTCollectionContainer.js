@@ -4,7 +4,22 @@ import { Container, StylesProvider, Typography, Chip } from '@material-ui/core'
 // import CreateSwap from '../create-swap/CreateSwap'
 import NFTCollection from './NFTCollection'
 
-function NFTCollectionContainer({ account, contractData }) {
+function NFTCollectionContainer({
+  account,
+  usdcContract,
+  contractProjects,
+  aaveStakedShareContract,
+  anchorStakedShareContract,
+  mockAnchorToken,
+  mockAnchorTokenContract,
+  faucetContract,
+  feesOracleContract,
+  mockAaveTokenContract,
+  mockAaveTokenAddress,
+  AaveAddress,
+  claiming,
+  revenueClaimContract
+}) {
   return (
     <StylesProvider injectFirst>
       <Container style={{ minHeight: '70vh', paddingBottom: '3rem' }}>
@@ -19,7 +34,18 @@ function NFTCollectionContainer({ account, contractData }) {
 
           </div>
         </div>
-        <NFTCollection account={account} contractData={contractData} />
+        <NFTCollection account={account}
+             contractProjects={contractProjects}
+             aaveStakedShareContract={aaveStakedShareContract}
+             anchorStakedShareContract={anchorStakedShareContract}
+             mockAnchorTokenContract={mockAnchorTokenContract}
+             mockAaveTokenContract={mockAaveTokenContract}
+             mockAaveTokenAddress={mockAaveTokenAddress}
+             faucetContract={faucetContract}
+             feesOracleContract={feesOracleContract}
+             AaveAddress={AaveAddress}
+             revenueClaimContract={revenueClaimContract}
+             claiming={claiming} />
       </Container>
     </StylesProvider>
   )

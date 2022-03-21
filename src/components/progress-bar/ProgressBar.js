@@ -63,10 +63,6 @@ const useStyles = makeStyles({
 })
 
 export default function CustomizedProgressBars({ tlv }) {
-  console.log(
-    '🚀 ~ file: ProgressBar.js ~ line 66 ~ CustomizedProgressBars ~ tlv',
-    tlv,
-  )
   const classes = useStyles()
 
   return (

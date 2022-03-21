@@ -37,52 +37,33 @@ function Projects({
   contractProjects,
   aaveStakedShareContract,
   anchorStakedShareContract,
+  mockAnchorToken,
+  mockAnchorTokenContract,
   faucetContract,
   feesOracleContract,
   mockAaveTokenContract,
   mockAaveTokenAddress,
   AaveAddress,
+  claiming,
 }) {
-  // console.log("🚀 ~ file: Projects.js ~ line 44 ~ mockAaveTokenAddress", mockAaveTokenAddress)
-  // console.log('contractProjects[0]', contractProjects[0])
-  console.log(
-    'mockAaveTokenContract approve(address,uint256):',
-    mockAaveTokenContract,
-  )
-  console.log('aaveStakedShareContract', aaveStakedShareContract)
-  // console.log('mockAaveTokenContract ', mockAaveTokenContract)
 
-  // console.log('feesOracleContract ', feesOracleContract)
+  const [projectName, setProjectName] = useState('')
+  const [amount, setAmount] = useState('')
+  const [duration, setDuration] = useState('')
 
-  // aaveStakedShareContract totalVolumenLoad() ,  logo(), rsId: ƒ () number of  nfts id => counters
-
-  // to approave it I need to create abis for Mock Aave Token: 0xE3255FAdaF182A813933FEB8c69e3c91937854fD then called allowance(metamskOwnerAccount, ProjectAddressToStake), returns ammounts either 0 or X
-  //   function allowance(address owner, address spender) public view virtual override returns (uint256) {
-  //     return _allowances[owner][spender];
-  // }
-  // if amount= 0 call  approve otherwise show stake screen
-  // amount = ethers.constants.MaxUint256
-  // function approve(address spender, uint256 amount) public virtual override returns (bool) {
-  //     _approve(_msgSender(), spender, amount);
-  //     return true;
-  // }
-
-  // console.log('aaveStakedShareContract ', aaveStakedShareContract)
-  // console.log('anchorStakedShareContract ', anchorStakedShareContract)
+  const [t, setT] = useState('')
   const [playersData, setPlayersData] = useState([])
   const [projectsInfo, setProjectsInfo] = useState([])
   const [logo, setLogo] = useState('')
   const [name, setName] = useState('')
   const [tlv, setTlv] = useState('')
+
   const [NFTSNumber, setNFTSNumber] = useState(0)
   const [loading, setLoading] = useState(false)
   let NFTS = 3
   const history = useHistory()
-
   const [isOpen, setIsOpen] = useState(false)
-  const togglePopup = () => {
-    setIsOpen(!isOpen)
-  }
+  const axios = require('axios')
 
   useEffect(() => {
     const loadPlayers = async () => {
@@ -155,13 +136,10 @@ function Projects({
     loadPlayers()
   }, [contractProjects])
 
-  // console.log('projectsInfo', projectsInfo)
-
   const getProjectInfo = async (e) => {
     e.preventDefault()
     // STAKESHARE
     const res1 = await aaveStakedShareContract.methods.rsToken(1).call() // returns when the stakeNFT was  created, the locked time, tokensAmount  0: '1647028940', 1: '150', 2: '500' => created, locked, amount
-    // console.log('res1 returns?', res1)
 
     const res2 = await aaveStakedShareContract.methods.rsToken(2).call() // returns when the stakeNFT was  created, the locked time, tokensAmount  0: '1647028940', 1: '150', 2: '500' => created, locked, amount
     // console.log('res2 returns?', res2)
@@ -185,7 +163,6 @@ function Projects({
 
     for (let i = 1; i <= Number(NFTSNumber); i++) {
       const cur = await aaveStakedShareContract.methods.rsToken(i).call()
-      console.log('🚀 cur', cur)
     }
 
     // const res2 = await aaveStakedShareContract.methods.revToken(1).call() // gives the nfft info by id (timestamp, timeLockOnSecs,  amount)
@@ -196,17 +173,15 @@ function Projects({
     e.preventDefault()
     const name = await anchorStakedShareContract.methods.name().call()
     setName(name)
-    console.log('anchor***', name)
 
     const NFTSNumber = await anchorStakedShareContract.methods.rsId().call()
     setNFTSNumber(NFTSNumber)
-    console.log('NFTSNumber', NFTSNumber)
+
 
     const tvl = await anchorStakedShareContract.methods
       .totalVolumenLoad()
       .call()
     const t = parseInt(tvl) / 10 ** 18
-    console.log('t', t)
     setTlv(t)
 
     for (let i = 1; i <= Number(NFTSNumber); i++) {
@@ -227,14 +202,6 @@ function Projects({
     // const res = await aaveStakedShareContract.methods.rsToken(1).call() // this is better call one contract to another
     // const res = await aaveStakedShareContract.methods.revToken(1).call() // gives the nfft info by id (timestamp, timeLockOnSecs,  amount)
 
-    // stake(uint128 tokenAmount, uint128 lockTimeSeconds )
-    const stakedShareImplementationAddress =
-      '0x4F37f255eDD02aBe875f3C92256Ab8f74Bff7a97'
-    const returnedData = await aaveStakedShareContract.methods
-      .stake((20 * 10 ** 18).toString(), (3).toString())
-      .send({ from: account })
-    console.log(' returnedData', returnedData)
-
     // FAUCET
     // const aaveTokenAddress = '0xE3255FAdaF182A813933FEB8c69e3c91937854fD'
     // // in aave 1 token =  1000000000000000000000  thats why we have to convert it
@@ -251,8 +218,82 @@ function Projects({
     // console.log('~ res', res)
     // console.log(' balanceOf', contractData.methods.balanceOf())
   }
+  const togglePopup = () => {
+    setIsOpen(!isOpen)
+  }
 
-  const checkStake = async (e) => {
+  const handleStakeOld = async (e) => {
+    e.preventDefault()
+
+    // const allowance = await mockAaveTokenContract.methods
+    //   .allowance(account, mockAaveTokenAddress)
+    //   .call() // returns integer how much money this contract can spend
+    // console.log('🚀  allowance', allowance)
+    // Remember approve the tokens Transfer before stake
+
+    console.log('projectName, amount, duration', projectName, amount, duration)
+
+    const mockTokenContracts = {
+      aaveStakedShareContract: mockAaveTokenContract,
+      anchorStakedShareContract: mockAnchorTokenContract,
+    }
+
+    const mockTokenAddresses = {
+      aaveStakedShareContract: mockAaveTokenAddress,
+      anchorStakedShareContract: mockAnchorToken,
+    }
+
+    const mockTokenAddress = mockTokenAddresses[projectName]
+    const mockTokenContract = mockTokenContracts[projectName]
+    // const aaveStakedShareAddress = '0x59fCcFbE3511B0f1286D54935258cB93AcC18E81'
+    //  aaveStakedShareContract: {mockTokenAddress: '0x59fCcFbE3511B0f1286D54935258cB93AcC18E81', stakeShareAddress: '' }
+    const allowance = await mockTokenContract.methods
+      .allowance(account, mockTokenAddress)
+      .call()
+    console.log('  allowance🚀🚀🚀', allowance)
+
+    // approve allow the mockAaveTokenContract to spend the user's tokens
+    //  after that users can stake
+    // approve function returns how much money this contract can spend
+    const stakedShareAddresses = {
+      aaveStakedShareContract: {
+        mockTokenAddress: '0xE3255FAdaF182A813933FEB8c69e3c91937854fD',
+        stakeShareAddress: '0x59fCcFbE3511B0f1286D54935258cB93AcC18E81',
+      },
+      anchorStakedShareContract: {
+        mockTokenAddress: '0x9Ea3c15b70D7af8fA6AFEaC21A26eb2d159e8634',
+        stakeShareAddress: '0x10B3Ce8b9B1b6777EE9d798119Ef7Be9BD38EB83',
+      },
+    }
+
+    const stakeShareAddress = stakedShareAddresses[projectName].mockTokenAddress
+    const approve = await mockTokenContract.methods
+      .approve(stakeShareAddress, amount.toString())
+      .send({ from: account })
+    console.log('🚀  approve', approve)
+
+    // Second call aaveStakedShareContract to stake tokens
+    const contracts = {
+      aaveStakedShareContract: aaveStakedShareContract,
+      anchorStakedShareContract: anchorStakedShareContract,
+    }
+
+    const stakedShareContract = contracts[projectName]
+    console.log('======stakedShareContract', stakedShareContract)
+
+    const stake = await contractProjects[0].methods
+      .stake(amount.toString(), duration.toString())
+      .send({ from: account })
+    console.log('🚀  stake', stake)
+
+    // balanceOf(address)
+    // const balanceOf = await stakedShareContract.methods
+    //   .balanceOf(account)
+    //   .call()
+    // console.log('🚀  balanceOf', balanceOf)
+  }
+
+  const handleStake = async (e) => {
     e.preventDefault()
     // const allowance = await mockAaveTokenContract.methods
     //   .allowance(account, mockAaveTokenAddress)
@@ -264,27 +305,27 @@ function Projects({
     const allowance = await mockAaveTokenContract.methods
       .allowance(account, mockAaveTokenAddress)
       .call()
-    console.log('  allowance🚀🚀🚀', allowance)
+
 
     // if allowance <= 0 call approve
     // First part is to check if allowance <= 0 call approve.
     // approve allow the mockAaveTokenContract to spend the user's tokens
     //  after that users can stake
-    if (allowance <= 0) {
+    // if (allowance <= 0 || allowance < amount) {
       // approve function returns how much money this contract can spend
       const approve = await mockAaveTokenContract.methods
-        .approve(aaveStakedShareAddress, (1).toString())
+        .approve(aaveStakedShareAddress, amount.toString())
         .send({ from: account })
       console.log('🚀  approve', approve)
-    }
+
 
     // Second call aaveStakedShareContract to stake tokens
     const stake = await contractProjects[0].methods
-      .stake((1).toString(), (1).toString())
+      .stake((amount).toString(), (1).toString())
       .send({ from: account })
     console.log('🚀  stake', stake)
 
-    // // balanceOf(address)
+    // balanceOf(address)
     const balanceOf = await contractProjects[0].methods
       .balanceOf(account)
       .call()
@@ -299,17 +340,47 @@ function Projects({
     const contractaddress = addresses[contractAddress]
     history.push(`/projects-nfts/${contractaddress}`)
   }
+  const getTokens = async (address) => {
+    const contractAddresses = [
+      `0xE3255FAdaF182A813933FEB8c69e3c91937854fD`,
+      `0x9Ea3c15b70D7af8fA6AFEaC21A26eb2d159e8634`,
+    ]
+    const tokenAddress = contractAddresses[address]
+    const returnedData = await faucetContract.methods
+      .claim(tokenAddress, (100 * 10 ** 18).toString())
+      .send({ from: account })
+    console.log(' returnedData', returnedData)
+  }
 
   const img = [
     'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/aaveNFT.jpg',
     'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/93cb11efacd85643c92296fc24430485e4846050/src/images/projects/Anchor.svg',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/Convex.png',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/MakerDAO.jpg',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/Spell.jpg',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/Anchor.png',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/Anchor.png',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/93cb11efacd85643c92296fc24430485e4846050/src/images/projects/Anchor.svg',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/Convex.png',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/MakerDAO.jpg',
   ]
-
   return (
     <Container>
       <div
         style={{ minHeight: '70vh', paddingBottom: '3rem', paddingTop: '3rem' }}
       >
+        <Button
+          variant="contained"
+          size="small"
+          style={{
+            fontSize: '0.7125rem',
+            backgroundColor: '#9a21b8',
+            color: 'white',
+          }}
+          onClick={claiming}
+        >
+          Loyalty
+        </Button>
         <Container>
           <div className="box">
             <div className="container-outer">
@@ -344,93 +415,21 @@ function Projects({
                 <p className="project-content2"></p>
               </Card>
             </div>
-
-            {/* <div className="box">
-              <Button
-                variant="contained"
-                className="container-outer btn-stake"
-                color="primary"
-                size="small"
-                component={Link}
-                to={`/stake`}
-              >
-                Stake
-              </Button>
-              <Button
-                className="container-outer btn-stake"
-                variant="contained"
-                size="small"
-                color="primary"
-                component={Link}
-                to={`/rewards`}
-              >
-                Claim
-              </Button>
-            </div> */}
           </div>
         </Container>
-        {/* <div className="label-btns">
-          <Chip size="medium" label="Sports" color="primary" clickable />
-          <Chip size="medium" label="Blog" clickable />
-          <Chip size="medium" label="News" clickable />
-          <Chip size="medium" label="Entertainment" clickable />
-        </div> */}
-
-        {/* logo: "https://github.com/NimrodHunter/Revenue-Share-NTF/blob/master/logos/Aave.svg"
-name: "Aave Revenue"
-numbOfNfts: "3"
-tvlConverted: 1200 */}
-
         {loading ? (
           <CircularStatic />
         ) : (
           <div>
-            {/* <Button
-              variant="contained"
-              className="btn-stake"
-              color="primary"
-              size="large"
-              onClick={getAnchor}
-            >
-              getAnchor
-            </Button>
-
-            <Button
-              variant="contained"
-              className="btn-stake"
-              color="primary"
-              size="large"
-              onClick={checkStake}
-            >
-              checkStake
-            </Button>
-
-            <Button
-              variant="contained"
-              className="btn-stake"
-              color="primary"
-              size="large"
-              onClick={getBalance}
-            >
-              getBalance
-            </Button>
-
-            <Button
-              variant="contained"
-              className="btn-stake"
-              color="secondary"
-              size="large"
-              onClick={getProjectInfo}
-            >
-              getProjectsInfo
-            </Button> */}
-
-            {/* logo: "https://github.com/NimrodHunter/Revenue-Share-NTF/blob/master/logos/Aave.svg"
-name: "Aave Revenue"
-numbOfNfts: "4"
-tvlConverted: 3001200 */}
-
-            {isOpen && <Stake handleClose={togglePopup} />}
+            {isOpen && (
+              <Stake
+                handleClose={togglePopup}
+                handleStake={handleStake}
+                setProjectName={setProjectName}
+                setAmount={setAmount}
+                setDuration={setDuration}
+              />
+            )}
 
             <Grid container>
               {projectsInfo.length ? (
@@ -493,6 +492,7 @@ tvlConverted: 3001200 */}
                           color="primary"
                           size="small"
                           onClick={() => gotoProjectNfts(project.address)}
+                          // onClick={test}
                         >
                           See NFTs
                         </Button>
@@ -502,16 +502,11 @@ tvlConverted: 3001200 */}
                           className="btn-stake"
                           color="primary"
                           size="small"
+                          onClick={() => getTokens(project.address)}
                         >
-                          <a
-                            href="https://gitter.im/kovan-testnet/faucet"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="a-stake"
-                          >
-                            Faucet
-                          </a>
+                          Faucet
                         </Button>
+
                         <Button
                           variant="contained"
                           className="btn-stake"
@@ -528,7 +523,7 @@ tvlConverted: 3001200 */}
                   </Grid>
                 ))
               ) : (
-                <Container style={{textAlign: 'center', paddingTop: '1rem'}}>
+                <Container style={{ textAlign: 'center', paddingTop: '1rem' }}>
                   <h2>Please Login...</h2>
                 </Container>
               )}

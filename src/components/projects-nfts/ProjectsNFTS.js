@@ -22,13 +22,15 @@ const COLORS = {
   Silver: '5px solid blue',
   PlatiumHands: '5px solid black',
 }
+const axios = require('axios')
 
 function ProjectsNFTS({ account, contractData }) {
+
   const [loading, setLoading] = useState(false)
   const [swapsData, setSwapsData] = useState([])
   const [userHistory, setUserHistory] = useState([])
   const [loadNFTs, setLoadNFTs] = useState([])
-  console.log('should get projects NFTs', loadNFTs)
+  const [projectNfts, setProjectNfts] = useState([])
   const userWallet = '0x9B6efdCFcdfb9825f805C2FE2f7f87eBBe76b253'
   // const userWallet = '0xAF67cbD8fb00759C3b4667beAcfBB3600e25476A'
 
@@ -39,6 +41,14 @@ function ProjectsNFTS({ account, contractData }) {
     '0x10B3Ce8b9B1b6777EE9d798119Ef7Be9BD38EB83':
       'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/93cb11efacd85643c92296fc24430485e4846050/src/images/projects/Anchor.svg',
   }
+
+  const imgBackup = [
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/Anchor.png',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/Convex.png',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/MakerDAO.jpg',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/Spell.jpg',
+    'https://raw.githubusercontent.com/electrone901/revenue-share-frontend/main/src/images/projects/Anchor.png',
+  ]
   const loadMyCollection = async () => {
     const covalentAPI = 'ckey_d4115699196e4d238fa138e180c'
     try {
@@ -59,22 +69,64 @@ function ProjectsNFTS({ account, contractData }) {
   }
 
   useEffect(() => {
-    const loadNFTs = async () => {
+    const projectsNFTS = async () => {
+      // let contractaddress = '0x59fCcFbE3511B0f1286D54935258cB93AcC18E81'
       if (contractaddress) {
-        let projectsNFTS = await fetch(
+        let projectsNFTS = await axios.get(
           `http://3.83.53.59:3000/project/${contractaddress}`,
+          {
+            withCredentials: false,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods':
+                'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+              'Access-Control-Allow-Headers':
+                'Origin, Content-Type, X-Auth-Token, Authorization, Accept,charset,boundary,Content-Length',
+            },
+          },
         )
-        console.log('🚀projectsNFTS **', projectsNFTS)
+        setLoadNFTs(projectsNFTS.data)
       }
     }
-    // setLoadNFTs(loadNFTs)
+    const loadNFTs = async () => {
+      if (contractaddress) {
+        let projectsNFTS = await axios.get(
+          `http://3.83.53.59:3000/project/${contractaddress}`,
+          {
+            withCredentials: false,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods':
+                'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+              'Access-Control-Allow-Headers':
+                'Origin, Content-Type, X-Auth-Token, Authorization, Accept,charset,boundary,Content-Length',
+            },
+          },
+        )
+
+        // await fetch(
+        //   `http://3.83.53.59:3000/project/${contractaddress}`,
+        // )
+        // console.log('🚀projectsNFTS **', projectsNFTS)
+      }
+    }
+    setLoadNFTs(loadNFTs)
     // loadNFTs()
 
     const userNFTs = async () => {
       const userAddress = '0xf4eA652F5B7b55f1493631Ea4aFAA63Fe0acc27C'
       if (userAddress) {
-        let myNFTs = await fetch(`http://3.83.53.59:3000/user/${userAddress}`)
-        console.log('** myNFTs  **', myNFTs)
+        let myNFTs = await axios.get(
+          `http://3.83.53.59:3000/user/${userAddress}`,
+          {
+            params: {},
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        )
       }
     }
     // userNFTs()
@@ -92,7 +144,6 @@ function ProjectsNFTS({ account, contractData }) {
           },
         })
         cids = await cids.json()
-        console.log(' cids', cids)
         const temp = []
         for (let cid of cids.value) {
           if (cid?.cid) {
@@ -123,51 +174,22 @@ function ProjectsNFTS({ account, contractData }) {
       }
     }
     loadSwapList()
+    projectsNFTS()
   }, [])
 
-  const projectsNFTs = {
-    blockNfts: {
-      block: 30522134,
-      timestamp: 1647804784,
-      nfts: [
-        { id: '1', createAt: '1647028940', locked: '150', amount: '500' },
-        {
-          id: '2',
-          createAt: '1647173964',
-          locked: '90',
-          amount: '900000000000000000000',
-        },
-        {
-          id: '3',
-          createAt: '1647174200',
-          locked: '60',
-          amount: '300000000000000000000',
-        },
-        {
-          id: '4',
-          createAt: '1647633060',
-          locked: '60',
-          amount: '3000000000000000000000000',
-        },
-        { id: '5', createAt: '1647730056', locked: '30', amount: '1' },
-        { id: '6', createAt: '1647731104', locked: '30', amount: '1' },
-      ],
-    },
-  }
-
   return (
-    <div style={{ minHeight: '40vh' }}>
+    <div style={{ minHeight: '70vh' }}>
       <Container>
         {loading ? (
           <CircularStatic />
         ) : (
           <div>
-            <Container style={{paddingTop: '3rem' }}>
+            <Container style={{ paddingTop: '3rem' }}>
               <h3>Project's NFTs</h3>
             </Container>
             <Grid container spacing={24}>
-              {projectsNFTs && projectsNFTs.blockNfts.nfts.length ? (
-                projectsNFTs.blockNfts.nfts.map((nft, index) => (
+              {loadNFTs && loadNFTs?.blockNfts?.nfts.length ? (
+                loadNFTs?.blockNfts?.nfts.map((nft, index) => (
                   <Grid
                     item
                     md={3}
@@ -198,7 +220,7 @@ function ProjectsNFTS({ account, contractData }) {
                           Period: <strong>{nft.locked} seconds</strong>
                         </p>
                         <p className="info">
-                          Amount: <strong>{nft.amount / 10 ** 18}</strong>
+                          Amount: <strong>{nft.amount}</strong>
                         </p>
                         <p className="info">
                           Level: <strong>{'Diamond Hands'}</strong>
@@ -212,11 +234,7 @@ function ProjectsNFTS({ account, contractData }) {
                           variant="contained"
                           size="small"
                           component={Link}
-                          style={{
-                            fontSize: '0.7125rem',
-                            backgroundColor: '#9a21b8',
-                            color: 'white',
-                          }}
+
                           to={`/my-nfts`}
                           // to={`/rewards/${pet.cid}`}
 
@@ -225,107 +243,18 @@ function ProjectsNFTS({ account, contractData }) {
                         >
                           Loyalty
                         </Button>
-                        {/* <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        className="card-header-swap"
-                      >
-                        {project.external_data.name}
-                      </Typography> */}
                       </CardContent>
-                      {/* <CardActions disableSpacing>
-                      <IconButton aria-label="share">
-                        <ShareIcon />
-                      </IconButton>
-                    </CardActions> */}
                     </Card>
                   </Grid>
                 ))
               ) : (
-                <h2>No Gifts Yet...</h2>
-              )}
-            </Grid>
-          </div>
-        )}
+                <Container>
+                  <h2 style={{
+                  textAlign: 'center',
+                  paddingTop:'3rem'
+                }}>No NFTs Yet...</h2>
+                </Container>
 
-        {/* OLD  */}
-        {loading ? (
-          <CircularStatic />
-        ) : (
-          <div>
-            <h2>Project's NFTs</h2>
-            <Grid container spacing={24}>
-              {userHistory && userHistory.length ? (
-                userHistory.map((project, index) => (
-                  <Grid item md={3} spacing={1} className="swap-card">
-                    <Card sx={{ maxWidth: 235, border: `` }}>
-                      <CardMedia
-                        component="img"
-                        height="184"
-                        image={project.external_data.image}
-                        alt="Paella dish"
-                      />
-                      <CardContent
-                        style={{
-                          border: `${COLORS.Silver}`,
-                          borderTop: `0px solid rgb(38 37 181 / 35%)`,
-                        }}
-                      >
-                        <p className="info">
-                          ID: <strong>{'0098'}</strong>
-                        </p>
-                        <p className="info">
-                          {' '}
-                          Amount: <strong>{'1,00'}</strong>
-                        </p>
-                        <p className="info">
-                          {' '}
-                          Period: <strong>{'3 months'}</strong>
-                        </p>
-                        <p className="info">
-                          {' '}
-                          Level: <strong>{'Diamond Hands'}</strong>
-                        </p>
-                        <br />
-                        <br />
-                        <CustomizedProgressBars />
-                        <br />
-                        <br />
-                        <Button
-                          variant="contained"
-                          size="small"
-                          component={Link}
-                          style={{
-                            fontSize: '0.7125rem',
-                            backgroundColor: '#9a21b8',
-                            color: 'white',
-                          }}
-                          to={`/rewards`}
-                          // to={`/rewards/${pet.cid}`}
-
-                          // "/collection/wallet-address"
-                          // className="swap-msg-btn"
-                        >
-                          Loyalty
-                        </Button>
-                        {/* <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        className="card-header-swap"
-                      >
-                        {project.external_data.name}
-                      </Typography> */}
-                      </CardContent>
-                      {/* <CardActions disableSpacing>
-                      <IconButton aria-label="share">
-                        <ShareIcon />
-                      </IconButton>
-                    </CardActions> */}
-                    </Card>
-                  </Grid>
-                ))
-              ) : (
-                <h2>No Gifts Yet...</h2>
               )}
             </Grid>
           </div>

@@ -44,7 +44,6 @@ export const Navbar = withRouter(({ account, connectWallet, logout }) => {
     }
   }
   const logoutUD = () => {
-    console.log('logging out!')
     uauth.logout().catch((error) => {
       console.error('profile error:', error)
     })
